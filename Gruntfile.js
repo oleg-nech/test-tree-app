@@ -8,7 +8,7 @@ module.exports = function(grunt){
 
         clean: {
             build: {
-                src: [ 'app/css', 'app/fonts', 'app/js' ]
+                src: [ 'app/css', 'app/fonts', 'app/js', 'app/test/js' ]
             }
         },
 
@@ -37,6 +37,18 @@ module.exports = function(grunt){
                         src: ['**/*'],
                         dest: 'app/fonts/',
                         expand: true
+                    },
+		    {
+                        expand: true,
+                        flatten: true,
+                        cwd: 'node_modules/',
+                        src: [
+                            'mocha/mocha.js',
+                            'mocha/mocha.css',
+                            'chai/chai.js',
+                            'sinon/pkg/sinon.js'
+                        ],
+                        dest: 'app/test/js/lib/'
                     }
                 ]
             }
@@ -62,7 +74,8 @@ module.exports = function(grunt){
                     transform: [["babelify", { "stage": 0 }]]
                 },
                 files: {
-                    "app/js/app.js": "assets/src/main.js"
+                    "app/js/app.js": "assets/src/main.js",
+		    "app/test/js/spec/all.spec.js": "assets/test/main.js"
                 }
             }
         },
@@ -81,6 +94,10 @@ module.exports = function(grunt){
         watch: {
             browserify: {
                 files: ['assets/src/**/*.js'],
+                tasks: ['browserify']
+            },
+	    tests: {
+                files: ['assets/test/**/*.js'],
                 tasks: ['browserify']
             },
             less: {
@@ -113,6 +130,15 @@ module.exports = function(grunt){
                     script: 'server/app.js'
                 }
             }
+        },
+
+	mocha: {
+            all: {
+                src: ['app/test/index.html']
+            },
+      	    options: {
+                run: true
+            }
         }
     });
 
@@ -130,4 +156,10 @@ module.exports = function(grunt){
         'browserSync',
         'watch'
     ]);
+
+    grunt.registerTask('test', [
+        'build',
+        'mocha'
+    ]);
+
 };

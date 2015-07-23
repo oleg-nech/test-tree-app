@@ -15,5 +15,3 @@ window.supportsStorage = () => {
 };
 
 window.App = require('./app');
-    
-App.start();

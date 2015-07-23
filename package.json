@@ -3,11 +3,7 @@
     "version": "0.0.1",
 
     "dependencies": {
-        "express": "4.x",
-
-        "mocha": "*",
-        "chai": "*",
-        "sinon": "*"
+        "express": "4.x"
     },
 
     "devDependencies": {
@@ -21,7 +17,12 @@
         "grunt-browserify": "*",
         "babelify": "*",
         "grunt-browser-sync": "*",
-        "matchdep": "*"
+	"grunt-mocha": "*",
+        "matchdep": "*",
+
+	"mocha": "*",
+        "chai": "*",
+        "sinon": "*"
     },
 
     "engines": {
