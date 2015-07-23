@@ -12,7 +12,7 @@ bower install
 grunt
 ```
 
-Open [http://localhost:5005]
+Open [http://localhost:5005](http://localhost:5005)
 
 # Tests
 ## From console
@@ -25,5 +25,5 @@ grunt test
 grunt build
 ```
 
-Open [http://localhost:5005/test]
+Open [http://localhost:5005/test](http://localhost:5005/test)
 
