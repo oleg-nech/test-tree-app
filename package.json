@@ -17,10 +17,10 @@
         "grunt-browserify": "*",
         "babelify": "*",
         "grunt-browser-sync": "*",
-	"grunt-mocha": "*",
+	    "grunt-mocha": "*",
         "matchdep": "*",
 
-	"mocha": "*",
+        "mocha": "*",
         "chai": "*",
         "sinon": "*"
     },
