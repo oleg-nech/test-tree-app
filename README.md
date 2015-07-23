@@ -1,29 +1,34 @@
-# test-tree-app
+## test-tree-app
 Test tree application
 
-# Instalation
+### Requirements 
+```
+node.js
+grunt-cli
+bower
+```
+
+## Instalation
 ```
 npm install
 bower install
 ```
 
-# Run
+## Run server
 ```
-grunt
+grunt start
 ```
-
 Open [http://localhost:5005](http://localhost:5005)
 
-# Tests
-## From console
+## Tests
+### From console
 ```
 grunt test
 ```
 
-## From browser
+### From browser
 ```
-grunt build
+grunt start
 ```
-
 Open [http://localhost:5005/test](http://localhost:5005/test)
 
