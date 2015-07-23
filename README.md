@@ -8,6 +8,24 @@ grunt-cli
 bower
 ```
 
+### Used frameworks and technologies
+```
+node.js
+express.js
+grunt
+npm
+bower
+backbone.js
+marionatte.js
+ES6 - Babel.js
+browserify
+bootstrap
+less
+mocha.js
+chai.js
+sinon.js
+```
+
 ## Instalation
 ```
 npm install
