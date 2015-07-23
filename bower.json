@@ -1,0 +1,17 @@
+{
+    "name": "tree-app",
+    "version": "0.0.1",
+
+    "dependencies": {
+        "open-sans-fontface"   : "*",
+        "bootstrap"            : "3.x.x",
+        "font-awesome"         : "*",
+        "jquery"               : "2.x",
+        "underscore"           : "*",
+        "backbone"             : "1.x",
+        "backbone.marionette"  : "2.x"
+    },
+
+    "devDependencies": {},
+    "directory": "bower_components"
+}

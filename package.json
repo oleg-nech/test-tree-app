@@ -1,0 +1,30 @@
+{
+    "name": "tree-app",
+    "version": "0.0.1",
+
+    "dependencies": {
+        "express": "4.x",
+
+        "mocha": "*",
+        "chai": "*",
+        "sinon": "*"
+    },
+
+    "devDependencies": {
+        "grunt": "0.4.x",
+        "grunt-contrib-clean": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-less": "*",
+        "grunt-express-server": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-browserify": "*",
+        "babelify": "*",
+        "grunt-browser-sync": "*",
+        "matchdep": "*"
+    },
+
+    "engines": {
+        "node": ">=0.10.35"
+    }
+}
