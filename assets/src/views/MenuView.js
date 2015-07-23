@@ -10,9 +10,14 @@ module.exports = Marionette.ItemView.extend({
     events: {
         'click @ui.item': 'clickItem'
     },
+
+    /**
+     * Click on menu item
+     * @param {Event} e
+     */
     clickItem(e){
         let $target = $(e.target),
-            $li = $(e.target).closest('li');
+            $li = $target.closest('li');
 
         if (!$li.hasClass('active')) {
             this.$el.find('.active').removeClass('active');

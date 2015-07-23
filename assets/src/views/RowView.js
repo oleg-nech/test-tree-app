@@ -26,7 +26,7 @@ module.exports = Marionette.ItemView.extend({
     /**
      * Event is called when view is rendered
      */
-    onRender(){
+    onRender () {
         let children = this.model.get('children'),
             depth = this.model.get('depth');
 
@@ -43,7 +43,7 @@ module.exports = Marionette.ItemView.extend({
      * User click on remove item button
      * @param {event} e
      */
-    removeRow(e){
+    removeRow (e) {
         e.stopPropagation();
 
         let message = "Delete it?";
@@ -52,7 +52,7 @@ module.exports = Marionette.ItemView.extend({
         }
 
         if (window.confirm(message)) {
-            this.model.destroy();
+            this.model.collection.remove(this.model);
             this.destroy();
         }
     },
@@ -61,7 +61,7 @@ module.exports = Marionette.ItemView.extend({
      * User click on "add next" button
      * @param {event} e
      */
-    addNext(e){
+    addNext (e) {
         e.stopPropagation();
 
         this._askForTitle().then((title) => {
@@ -72,6 +72,8 @@ module.exports = Marionette.ItemView.extend({
                 depth: this.model.get('depth')
             }, {at: next});
             this.trigger('collection:changed');
+        }).catch(() => {
+            // do nothing
         });
     },
 
@@ -79,7 +81,7 @@ module.exports = Marionette.ItemView.extend({
      * User click on "add children" button
      * @param {event} e
      */
-    addChildren(e){
+    addChildren (e) {
         e.stopPropagation();
 
         this._askForTitle().then((title) => {
@@ -90,13 +92,15 @@ module.exports = Marionette.ItemView.extend({
 
             this.model.set({children: children});
             this.render();
+        }).catch(() => {
+            // do nothing
         });
     },
 
     /**
      * Open collapsed tree
      */
-    openTree: function() {
+    openTree () {
         this.$el.find('.sub-list-group:first').show();
         this.ui.open.hide();
         this.ui.close.show();
@@ -105,7 +109,7 @@ module.exports = Marionette.ItemView.extend({
     /**
      * Collapse tree
      */
-    closeTree: function() {
+    closeTree () {
         this.$el.find('.sub-list-group:first').hide();
         this.ui.open.show();
         this.ui.close.hide();
@@ -116,7 +120,7 @@ module.exports = Marionette.ItemView.extend({
      * @param {Array} children
      * @private
      */
-    _renderChildren(children){
+    _renderChildren (children) {
         let TreeCollection = require('../collections/TreeCollection'),
             SubtreeView = require('./SubtreeView'),
             depth = this.model.get('depth'),
@@ -130,6 +134,12 @@ module.exports = Marionette.ItemView.extend({
         if (!this.model.get('open')) {
             view.$el.find('.sub-list-group').hide();
         }
+
+        view.on('treeview:collection:changed', (collection) => {
+            this.model.set({
+                children: collection.toJSON()
+            });
+        });
     },
 
     /**
@@ -137,9 +147,15 @@ module.exports = Marionette.ItemView.extend({
      * @returns {Promise}
      * @private
      */
-    _askForTitle(){
+    _askForTitle () {
         return new Promise((resolve, reject) => {
-            resolve(window.prompt('Enter title:'));
+            let title = window.prompt('Enter title:');
+
+            if (title !== '' && title !== null && title !== undefined) {
+                resolve(title);
+            } else {
+                reject();
+            }
         });
     }
 });

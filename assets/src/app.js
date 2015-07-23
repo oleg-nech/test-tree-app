@@ -21,11 +21,9 @@ App.on('start', () => {
         Backbone.history.start({});
     }
 
-
     let MenuView = require('./views/MenuView'),
         menu = new MenuView();
     menu.render();
-
 });
 
 module.exports = App;

@@ -38,7 +38,7 @@ module.exports = function(grunt){
                         dest: 'app/fonts/',
                         expand: true
                     },
-		    {
+		            {
                         expand: true,
                         flatten: true,
                         cwd: 'node_modules/',
@@ -75,7 +75,7 @@ module.exports = function(grunt){
                 },
                 files: {
                     "app/js/app.js": "assets/src/main.js",
-		    "app/test/js/spec/all.spec.js": "assets/test/main.js"
+		            "app/test/js/spec/all.spec.js": "assets/test/main.js"
                 }
             }
         },
@@ -96,7 +96,7 @@ module.exports = function(grunt){
                 files: ['assets/src/**/*.js'],
                 tasks: ['browserify']
             },
-	    tests: {
+	        tests: {
                 files: ['assets/test/**/*.js'],
                 tasks: ['browserify']
             },
@@ -132,7 +132,7 @@ module.exports = function(grunt){
             }
         },
 
-	mocha: {
+	    mocha: {
             all: {
                 src: ['app/test/index.html']
             },
@@ -148,6 +148,12 @@ module.exports = function(grunt){
         'concat:lib',
         'browserify',
         'less'
+    ]);
+
+    grunt.registerTask('start', [
+        'build',
+        'express:dev',
+	    'watch'
     ]);
 
     grunt.registerTask('default', [

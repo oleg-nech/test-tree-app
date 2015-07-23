@@ -37,9 +37,8 @@
         </div>
 
         <script type="text/template" id="tree-tpl">
-            <button class="btn btn-success save" type="button">Save to LocalStorage</button>
-            <button class="btn btn-primary load" type="button">Load from LocalStorage</button>
-
+            <button class="btn btn-success save" type="button" style="margin-right:10px;">Save to LocalStorage</button>
+            <em>Application automatically will load tree from localeStorage when you will refresh the page</em>
             <ul class="list-group" id="tree-list"></ul>
         </script>
 
@@ -62,6 +61,14 @@
                 <% } %>
                 <%-title%>
             </div>
+        </script>
+
+        <script type="text/template" id="iterative-tpl">
+            <p>
+                Iterative traversal method is used for binary trees, but our tree is not a binary, because node can
+                have more then 2 children. But iterative method can be used on materialized path tree. Unfortunately
+                I had no time to implement it because it will takes more time then is allowed.
+            </p>
         </script>
 
         <script type="text/javascript" src="/js/lib.js"></script>

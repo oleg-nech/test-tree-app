@@ -1,3 +1,5 @@
+/*global describe, it, require*/
+
 describe("app.js", () => {
     describe("App object", () => {
         it("App is global obejct", () => {

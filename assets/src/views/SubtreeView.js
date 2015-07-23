@@ -7,8 +7,10 @@ let TreeView = require('./TreeView'),
 module.exports = TreeView.extend({
     template: '#subtree-tpl',
     childView: SubRowView,
+
     initialize(){
         this._initialize();
     },
+
     onDestroy(){}
 });

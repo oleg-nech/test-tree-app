@@ -46,9 +46,14 @@ module.exports = Marionette.ItemView.extend({
     events: {
         'click @ui.item': 'clickItem'
     },
+
+    /**
+     * Click on menu item
+     * @param {Event} e
+     */
     clickItem: function clickItem(e) {
         var $target = $(e.target),
-            $li = $(e.target).closest('li');
+            $li = $target.closest('li');
 
         if (!$li.hasClass('active')) {
             this.$el.find('.active').removeClass('active');
@@ -112,7 +117,7 @@ module.exports = Marionette.ItemView.extend({
         }
 
         if (window.confirm(message)) {
-            this.model.destroy();
+            this.model.collection.remove(this.model);
             this.destroy();
         }
     },
@@ -134,6 +139,8 @@ module.exports = Marionette.ItemView.extend({
                 depth: _this.model.get('depth')
             }, { at: next });
             _this.trigger('collection:changed');
+        })['catch'](function () {
+            // do nothing
         });
     },
 
@@ -154,6 +161,8 @@ module.exports = Marionette.ItemView.extend({
 
             _this2.model.set({ children: children });
             _this2.render();
+        })['catch'](function () {
+            // do nothing
         });
     },
 
@@ -181,6 +190,8 @@ module.exports = Marionette.ItemView.extend({
      * @private
      */
     _renderChildren: function _renderChildren(children) {
+        var _this3 = this;
+
         var TreeCollection = require('../collections/TreeCollection'),
             SubtreeView = require('./SubtreeView'),
             depth = this.model.get('depth'),
@@ -194,6 +205,12 @@ module.exports = Marionette.ItemView.extend({
         if (!this.model.get('open')) {
             view.$el.find('.sub-list-group').hide();
         }
+
+        view.on('treeview:collection:changed', function (collection) {
+            _this3.model.set({
+                children: collection.toJSON()
+            });
+        });
     },
 
     /**
@@ -203,7 +220,13 @@ module.exports = Marionette.ItemView.extend({
      */
     _askForTitle: function _askForTitle() {
         return new Promise(function (resolve, reject) {
-            resolve(window.prompt('Enter title:'));
+            var title = window.prompt('Enter title:');
+
+            if (title !== '' && title !== null && title !== undefined) {
+                resolve(title);
+            } else {
+                reject();
+            }
         });
     }
 });
@@ -228,9 +251,11 @@ var TreeView = require('./TreeView'),
 module.exports = TreeView.extend({
     template: '#subtree-tpl',
     childView: SubRowView,
+
     initialize: function initialize() {
         this._initialize();
     },
+
     onDestroy: function onDestroy() {}
 });
 
@@ -245,40 +270,53 @@ module.exports = Marionette.CompositeView.extend({
     childView: RowView,
     childViewContainer: 'ul',
     ui: {
-        saveBtn: '.save',
-        loadBtn: '.load'
+        saveBtn: '.save'
     },
     events: {
-        'click @ui.saveBtn': 'saveTree',
-        'click @ui.loadBtn': 'loadTree'
+        'click @ui.saveBtn': 'saveTree'
+    },
+    collectionEvents: {
+        'update': 'collectionChanged',
+        'change:children': 'collectionChanged'
     },
 
     initialize: function initialize() {
         App.on('tree:refresh', _.bind(this.render, this));
         this._initialize();
     },
+
     onDestroy: function onDestroy() {
         App.off('tree:refresh');
     },
 
+    /**
+     * Save tree to localeStorage
+     */
     saveTree: function saveTree() {
         if (supportsStorage()) {
-            // save
+            localStorage.setItem('tree', JSON.stringify(this.collection.toJSON()));
         }
     },
 
-    loadTree: function loadTree() {
-        if (supportsStorage()) {
-            // load
-        }
+    /**
+     * Trigger event to update whole collection
+     */
+    collectionChanged: function collectionChanged() {
+        this.triggerMethod('treeview:collection:changed', this.collection);
     },
 
+    /**
+     * Refresh view when collection was changed
+     * @private
+     */
     _initialize: function _initialize() {
         this.on('itemview:collection:changed', _.bind(this.render, this));
     }
 });
 
 },{"./RowView":4}],8:[function(require,module,exports){
+/*global describe, it, require*/
+
 "use strict";
 
 describe("app.js", function () {
@@ -290,6 +328,7 @@ describe("app.js", function () {
 });
 
 },{}],9:[function(require,module,exports){
+/*global describe, it, require*/
 "use strict";
 
 var TreeCollection = require('../../src/collections/TreeCollection');
@@ -305,6 +344,8 @@ describe("collections.TreeCollection", function () {
 });
 
 },{"../../src/collections/TreeCollection":1}],10:[function(require,module,exports){
+/*global require*/
+
 'use strict';
 
 require('./app');
@@ -314,6 +355,7 @@ require('./views/MenuView');
 require('./views/RowView');
 
 },{"./app":8,"./collections/TreeCollection":9,"./models/RowModel":11,"./views/MenuView":12,"./views/RowView":13}],11:[function(require,module,exports){
+/*global describe, it, require*/
 "use strict";
 
 var RowModel = require('../../src/models/RowModel');
@@ -322,6 +364,7 @@ describe("models.RowModel", function () {
     describe("defaults", function () {
         it("all default fields are set", function () {
             var model = new RowModel({});
+
             expect(model.get('title')).to.equal('');
             expect(model.get('depth')).to.equal(1);
             expect(model.get('children')).to.deep.equal([]);
@@ -331,6 +374,8 @@ describe("models.RowModel", function () {
 });
 
 },{"../../src/models/RowModel":2}],12:[function(require,module,exports){
+/*global describe, it, require*/
+
 "use strict";
 
 var MenuView = require('../../src/views/MenuView');
@@ -340,6 +385,7 @@ describe("views.MenuView", function () {
         it("when clicking item it should change active elemtn", function () {
             $('#content').html('<ul class="navbar-nav"><li id="el1"><a>el1</a></li><li id="el2"><a>el2</a></li></ul>');
             var view = new MenuView();
+            view.render();
 
             expect($('#content li.active').length).to.equal(0);
 
@@ -355,31 +401,21 @@ describe("views.MenuView", function () {
 });
 
 },{"../../src/views/MenuView":3}],13:[function(require,module,exports){
+/*global describe, it, require*/
+
 'use strict';
 
 var RowView = require('../../src/views/RowView'),
-    RowModel = require('../../src/models/RowModel');
-
-function render() {
-    var model = new RowModel({
-        title: 'root',
-        children: [{ title: 'child1' }, { title: 'child2' }]
-    }),
-        view = new RowView({
-        model: model
-    });
-
-    $('#content').html(view.render().$el);
-}
+    TreeCollection = require('../../src/collections/TreeCollection');
 
 describe("views.RowView", function () {
     function render() {
-        var model = new RowModel({
+        var collection = new TreeCollection([{
             title: 'root',
             children: [{ title: 'child1' }, { title: 'child2' }]
-        }),
+        }]),
             view = new RowView({
-            model: model
+            model: collection.at(0)
         });
 
         $('#content').html(view.render().$el);
@@ -400,6 +436,7 @@ describe("views.RowView", function () {
     describe("removeRow", function () {
         it("should remove row", function () {
             render();
+
             var confirmStub = sinon.stub(window, 'confirm');
             confirmStub.returns(true);
 
@@ -410,4 +447,4 @@ describe("views.RowView", function () {
     });
 });
 
-},{"../../src/models/RowModel":2,"../../src/views/RowView":4}]},{},[10]);
+},{"../../src/collections/TreeCollection":1,"../../src/views/RowView":4}]},{},[10]);

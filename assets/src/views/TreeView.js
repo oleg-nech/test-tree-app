@@ -8,35 +8,46 @@ module.exports = Marionette.CompositeView.extend({
     childView: RowView,
     childViewContainer: 'ul',
     ui: {
-        saveBtn: '.save',
-        loadBtn: '.load'
+        saveBtn: '.save'
     },
     events: {
-        'click @ui.saveBtn': 'saveTree',
-        'click @ui.loadBtn': 'loadTree'
+        'click @ui.saveBtn': 'saveTree'
+    },
+    collectionEvents: {
+	    'update': 'collectionChanged',
+	    'change:children': 'collectionChanged'
     },
 
-    initialize() {
+    initialize () {
         App.on('tree:refresh', _.bind(this.render, this));
         this._initialize();
     },
-    onDestroy(){
+
+    onDestroy () {
         App.off('tree:refresh');
     },
 
-    saveTree(){
+    /**
+     * Save tree to localeStorage
+     */
+    saveTree () {
         if (supportsStorage()) {
-            // save
+            localStorage.setItem('tree', JSON.stringify(this.collection.toJSON()));
         }
     },
 
-    loadTree(){
-        if (supportsStorage()) {
-            // load
-        }
+    /**
+     * Trigger event to update whole collection
+     */
+    collectionChanged () {
+        this.triggerMethod('treeview:collection:changed', this.collection);
     },
 
-    _initialize(){
+    /**
+     * Refresh view when collection was changed
+     * @private
+     */
+    _initialize () {
         this.on('itemview:collection:changed', _.bind(this.render, this));
     }
 });

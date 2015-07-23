@@ -1,3 +1,5 @@
+/*global require*/
+
 require('./app');
 require('./collections/TreeCollection');
 require('./models/RowModel');
